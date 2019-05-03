@@ -6,7 +6,7 @@
 /*   By: adimose <adimose@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 16:16:14 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/03 21:29:02 by adimose          ###   ########.fr       */
+/*   Updated: 2019/05/03 21:55:32 by adimose          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@ static int  integer(*r)
 	if (c == '-' || c == '+')
         reader_next(r);
     c = reader_peek(r);
-    while (c >= '0' && c <= '9')
+    while (c >= '0' && c <= '9' || c = '_')
 	{
-		num = num * 10 + (c - 48);
-		reader_next;
+        if (c >= '0' && c <= '9')
+	    	num = num * 10 + (c - 48);
+		reader_next(r);
         c = reader_peek(r);
     }
     return(num * s)
@@ -41,10 +42,11 @@ static float floatt(*r)
     char  c;
 
     c = reader_peek(r);
-    while (c >= '0' && c <= '9')
+    while ((c >= '0' && c <= '9') || c = '_')
 	{
-		num = num * 10 + (c - 48);
-		reader_next;
+        if (c >= '0' && c <= '9')
+	    	num = num * 10 + (c - 48);
+		reader_next(r);
         c = reader_peek(r);
     }
     while (num > 0)
@@ -52,9 +54,9 @@ static float floatt(*r)
     return(num)
 }
 
-t_toml  digit(t_reader *r)
+t_toml      digit(t_reader *r)
 {
-    t_toml  digit;
+    t_toml  digit;		reader_next;
     int     integer;
 
     integer = integer(r);
