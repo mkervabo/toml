@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   toml.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adimose <adimose@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/01 14:49:52 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/03 15:59:06 by adimose          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,5 +38,6 @@ t_toml_table	*read_toml(t_reader *r)
 	else
 	{
 		read_key();
+
 	}
 }

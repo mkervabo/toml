@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   toml.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adimose <adimose@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/01 14:49:44 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/03 21:31:28 by adimose          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ typedef	struct	s_toml_table
 {
 	char				*key;
 	struct s_toml		*value;
-	struct s_toml_array *next;
+	struct s_toml_table *next;
 }				t_toml_table;
 
 typedef struct	s_toml
@@ -68,6 +68,8 @@ int16_t			reader_peek(t_reader *self);
 void			reader_next(t_reader *self);
 
 void			skip_ws(t_reader *r, bool newline);
+
+char			*ten_more(char *str, size_t len);
 
 char			*read_key(t_reader *r);
 
