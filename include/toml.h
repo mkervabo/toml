@@ -6,7 +6,7 @@
 /*   By: adimose <adimose@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/03 21:31:28 by adimose          ###   ########.fr       */
+/*   Updated: 2019/05/04 13:01:41 by adimose          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void			skip_ws(t_reader *r, bool newline);
 char			*ten_more(char *str, size_t len);
 
 char			*read_key(t_reader *r);
+char			*read_quoted_key(t_reader *r, bool	b)
 
 t_toml_table	*read_toml(t_reader *r);
 

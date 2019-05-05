@@ -6,7 +6,7 @@
 /*   By: adimose <adimose@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/03 15:04:54 by adimose          ###   ########.fr       */
+/*   Updated: 2019/05/04 13:01:45 by adimose          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char			*ten_more(char *str, size_t len)
 	return(new_str);	
 }
 
-static char		*read_quoted_key(t_reader *r, bool	b)
+char			*read_quoted_key(t_reader *r, bool	b)
 {
 	int64_t c;
 	char	*key;
@@ -34,7 +34,7 @@ static char		*read_quoted_key(t_reader *r, bool	b)
 
 	if (!(key = (char*)malloc(sizeof(char) * 10))
 		return;
-	i = r->i;
+	i = 0;
 	reader_next(r);
 	while ((b == true && c != '"') ││ (b == false && c != '\''))
 	{
@@ -55,7 +55,7 @@ static char		*read_bare_key(t_reader *r)
 
 	if (!(key = (char*)malloc(sizeof(char) * 10))
 		return;
-	i = r->i;
+	i = 0;
 	reader_next(r);
 	while ((c = reader_peek(r)) && (c <= 'A' && c >= 'Z')
 		&& (c <= 'a' && c >= 'z') && (c <= '0' && c >= '9'))
