@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   toml.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adimose <adimose@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/04 13:01:41 by adimose          ###   ########.fr       */
+/*   Updated: 2019/05/05 17:08:56 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,21 @@ t_reader		create_reader(int fd, char *buffer, size_t buffer_size);
 int16_t			reader_peek(t_reader *self);
 void			reader_next(t_reader *self);
 
+void			ft_error(char *msg);
+
 void			skip_ws(t_reader *r, bool newline);
 
 char			*ten_more(char *str, size_t len);
 
 char			*read_key(t_reader *r);
-char			*read_quoted_key(t_reader *r, bool	b)
+char			*read_quoted_key(t_reader *r, bool	b);
 
 t_toml_table	*read_toml(t_reader *r);
+t_toml			read_t_toml(t_reader *r);
+t_toml     		read_digit(t_reader *r);
+t_toml        	read_string(t_reader *r);
+t_toml        	read_table(t_reader *r);
+//t_toml        	read_array(t_reader *r);
+
 
 #endif

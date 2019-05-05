@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   key.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adimose <adimose@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/04 13:01:45 by adimose          ###   ########.fr       */
+/*   Updated: 2019/05/05 16:59:08 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ char			*ten_more(char *str, size_t len)
 	size_t	i;
 
 	i = 0;
-	if(new_str = (char*)malloc(sizeof(char) * (len + 10))
-		return ;
+	if(new_str = (char*)malloc(sizeof(char) * (len + 10)))
+		ft_error("Error malloc");
 	while (i <= len)
 		new_str[i] = str[i];
 	free(str);
@@ -32,11 +32,11 @@ char			*read_quoted_key(t_reader *r, bool	b)
 	char	*key;
 	size_t	i;
 
-	if (!(key = (char*)malloc(sizeof(char) * 10))
-		return;
+	if (!(key = (char*)malloc(sizeof(char) * 11)))
+		ft_error("Error malloc");
 	i = 0;
 	reader_next(r);
-	while ((b == true && c != '"') ││ (b == false && c != '\''))
+	while ((b == true && c != '"') || (b == false && c != '\''))
 	{
 		if ((i % 10) == 0)
 			key = ten_more(key, i);
@@ -44,6 +44,7 @@ char			*read_quoted_key(t_reader *r, bool	b)
 		reader_next(r);
 		i++;
 	}
+	key[i] = '\0';
 	return (key);
 }
 
@@ -53,8 +54,8 @@ static char		*read_bare_key(t_reader *r)
 	char	*key;
 	size_t	i;
 
-	if (!(key = (char*)malloc(sizeof(char) * 10))
-		return;
+	if (!(key = (char*)malloc(sizeof(char) * 10)))
+		ft_error("Error malloc");
 	i = 0;
 	reader_next(r);
 	while ((c = reader_peek(r)) && (c <= 'A' && c >= 'Z')
@@ -66,6 +67,7 @@ static char		*read_bare_key(t_reader *r)
 		reader_next(r);
 		i++;
 	}
+	key[i] = '\0';
 	return (key);
 }
 
