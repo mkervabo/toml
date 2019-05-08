@@ -2,31 +2,30 @@
 
 t_toml		read_array(t_reader *r)
 {
-	t_toml	tom;
-	t_tab	tab;
+	t_toml			tom;
+	t_toml_array	*array;
 	int16_t	c;
 
 	tom.type = TOML_ARRAY;
-	tab = create_tab(10);
+	array = create_array(10);
 	reader_next(r);
 	skip_ws(r, false);
-	append_tab(&tab, read_toml_value(r));
-	printf("type: %u\n", tab.inner[tab.len].type);
+	append_array(&array, read_toml_value(r));
+	printf("type: %u\n", array->inner[array->len].type);
 	while ((c = reader_peek(r)) != -1 && c != ']')
 	{
 		if (c == ',')
 		{
 			reader_next(r);
 			skip_ws(r, false);
-			append_tab(&tab, read_toml_value(r));
-			printf("type: %u\n", tab.inner[tab.len].type);
-			if (tab.inner[tab.len].type != tab.inner[0].type)
+			append_array(array, read_toml_value(r));
+			if (array->inner[array->len - 1].type != array->inner[0].type)
 				ft_error("Wrong array");
 		}
 		else
 			reader_next(r);
 	}
-	tom.value.array_v = tab.inner;
+	tom.value.array_v = array;
 	reader_next(r);
-	return(tom);
+	return (tom);
 }
