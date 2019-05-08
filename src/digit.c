@@ -6,32 +6,31 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 16:16:14 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/05 18:02:47 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/08 10:56:26 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "toml.h"
 
-static int  read_integer(t_reader *r)
+static int64_t  read_integer(t_reader *r)
 {
-    int num;
-    char c;
+    int64_t num;
+    int16_t c;
     int s;
 
     s = 1;
+	num = 0;
     c = reader_peek(r);
     if (c == '-')
 		s = -1;
 	if (c == '-' || c == '+')
         reader_next(r);
-    c = reader_peek(r);
-    while ((c >= '0' && c <= '9') || c == '_')
+    while ((c = reader_peek(r)) != -1 && ((c >= '0' && c <= '9') || c == '_'))
 	{
         if (c >= '0' && c <= '9')
 	    	num = num * 10 + (c - 48);
 		reader_next(r);
-        c = reader_peek(r);
     }
     return(num * s);
 }
@@ -40,16 +39,14 @@ static float read_float(t_reader *r)
 {
     float	num;
 	size_t	i;
-    char 	c;
+    int16_t c;
 
 	i = 0;
-    c = reader_peek(r);
-    while ((c >= '0' && c <= '9') || c == '_')
+    while ((c = reader_peek(r)) != -1 && ((c >= '0' && c <= '9') || c == '_'))
 	{
         if (c >= '0' && c <= '9')
 	    	num = num * 10 + (c - 48);
 		reader_next(r);
-        c = reader_peek(r);
 		i++;
     }
     while (i-- > 0)

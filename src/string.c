@@ -6,51 +6,71 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 21:39:06 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/05 17:00:00 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/08 13:20:58 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 
+static bool	multi_string_end(t_reader *r, t_str *str, bool quote)
+{
+	char q;
+	int16_t c;
+
+	if (reader_peek(r) == '"')
+		q = '"';
+	else
+		q = '\'';
+	reader_next(r);
+	c = reader_peek(r);
+	if ((c == '"' && quote == true) || (c == '\'' && quote == false))
+	{
+		reader_next(r);
+		c = reader_peek(r);
+		if ((c == '"' && quote == true) || (c == '\'' && quote == false))
+			return(true);
+		append_char(str, q);
+	}
+	append_char(str, q);
+	return(false);
+}
+
 static char *read_multi_string(t_reader *r, bool b)
 {
-	int		i;
-	char	c;
-	char	*str;
+	int64_t	c;
+	bool	end;
+	t_str	str;
 
-	i = 0;
+	end = false;
 	reader_next(r);
-	if(reader_peek(r) != '\n')
-		ft_error("Invalid multi string");
-	if (b == false)
-    	return(read_quoted_key(r, b));
-	if (!(str = (char*)malloc(sizeof(char) * 11)))
+	if(reader_peek(r) == '\n')
+		reader_next(r);
+	if (!(str = create_str(10)).inner)
 		ft_error("Error malloc");
-	while ((c = reader_peek(r)) && c != '"')
+	while ((c = reader_peek(r)) != -1 && end == false)
 	{
-		if ((i % 10) == 0)
-			str = ten_more(str, i);
-		if (c == '\\')
-			skip_ws(r, false);
+		if (c == '\\' && b == true)
+		{
+			reader_next(r);
+			skip_ws(r, true);
+		}
+		else if ((c == '"' && b == true) || (c == '\'' && b == false))
+			end = multi_string_end(r, &str, b);
 		else
 		{
-			str[i] = c;
+			append_char(&str, c);
 			reader_next(r);
-			i++;
 		}
-		return (str);
 	}
+	append_char(&str, '\0');
+	reader_next(r);
+	return (str.inner);
 }
 
 static char *read_literal_string(t_reader *r)
-{
-    int     c;
-    char    *str;
-    size_t	i;
-    
+{ 
     reader_next(r);
-    c = reader_peek(r);
-    if (c = '\'')
+    if (reader_peek(r) == '\'')
     {
         reader_next(r);
         if (reader_peek(r) == '\'')
@@ -62,11 +82,8 @@ static char *read_literal_string(t_reader *r)
 
 static char *read_basic_string(t_reader *r)
 {
-    int c;
-    
     reader_next(r);
-    c = reader_peek(r);
-    if (c = '"')
+    if (reader_peek(r) == '"')
     {
         reader_next(r);
         if (reader_peek(r) == '"')
@@ -82,14 +99,16 @@ t_toml        read_string(t_reader *r)
 	t_toml tom;
 
     c = reader_peek(r);
-    if (c = '"')
+    if (c == '"')
 		return(tom = (t_toml) {
 			TOML_STRING,
 			{.string_v = read_basic_string(r)}
 		});
-    else if (c = '\'')
+    else if (c == '\'')
 		return(tom = (t_toml) {
 			TOML_STRING,
 			{.string_v = read_literal_string(r)}
 		});
+	else
+		ft_error("Invalid string");
 }

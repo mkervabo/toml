@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/05 17:00:35 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/08 14:09:16 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 void			ft_error(char *msg)
 {
 	size_t i;
+
+	i = 0;
 	while (msg[i])
 		i++;
-	write(0, msg, i);
+	write(1, msg, i);
 	exit(0);
 }
 
@@ -37,48 +39,61 @@ void			skip_ws(t_reader *r, bool newline)
 	}
 }
 
-t_toml			read_t_toml(t_reader *r)
+t_toml			read_toml_value(t_reader *r)
 {
-	char c;
+	int16_t c;
 	t_toml tom;
 
 	c = reader_peek(r);
-	if ((c > '0' && c < '9') || c == '+' || c == '-')
+	if ((c >= '0' && c <= '9') || c == '+' || c == '-')
 		tom = read_digit(r);
 	else if (c == '\'' || c == '"')
 		tom =  read_string(r);
 	else if (c == '[')
-		tom = (t_toml) {
-			TOML_TABLE,
-			{.table_v = read_table(r)}
-		};
-	/*else if ((c > 'a' && c < 'z') || (c > 'A' && c < 'Z'))
-		tom = read_array(r);*/
-	return(tom);
+		tom = read_array(r);
+	else if (c == 't' || c == 'f')
+		tom = read_boolean(r);
+	return (tom);
 }
 
 t_toml_table	*read_toml(t_reader *r)
 {
 	t_toml_table	petit_poisson;
-	char 			c;
+	int16_t 		c;
 
 	skip_ws(r, true);
 	if (reader_peek(r) == '[')
 	{
-		// TODO read table
+		/*petit_poisson.value = (t_toml) {
+			TOML_TABLE,
+			{.table_v = read_table(r)}
+		};*/
 	}
 	else
 	{
 		petit_poisson.key = read_key(r);
 		skip_ws(r, false);
 		c = reader_peek(r);
+		printf("Key: %s\n", petit_poisson.key);
 		if (c != '=')
 			ft_error("Wrong format");
 		reader_next(r);
 		skip_ws(r, false);
-		petit_poisson.value = read_t_toml(r);
-		
-		
-
+		petit_poisson.value = read_toml_value(r);
+		switch (petit_poisson.value.type) {
+			case TOML_BOOLEAN:
+				printf("Bool %s", petit_poisson.value.value.boolean_v ? "true" : "false");
+				break;
+			case TOML_FLOAT:
+				printf("Float %f", petit_poisson.value.value.float_v);
+				break;
+			case TOML_INTEGER:
+				printf("Int %lld", petit_poisson.value.value.integer_v);
+				break;
+			case TOML_STRING:
+				printf("String %s", petit_poisson.value.value.string_v);
+				break;
+		}
+		printf("\n");
 	}
 }

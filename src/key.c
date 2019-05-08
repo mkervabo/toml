@@ -6,77 +6,81 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/05 16:59:08 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/08 11:06:23 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 
-char			*ten_more(char *str, size_t len)
+char		read_escape(t_reader *r)
 {
-	char 	*new_str;
-	size_t	i;
+	char c;
 
-	i = 0;
-	if(new_str = (char*)malloc(sizeof(char) * (len + 10)))
-		ft_error("Error malloc");
-	while (i <= len)
-		new_str[i] = str[i];
-	free(str);
-	return(new_str);	
+	reader_next(r);
+	c = reader_peek(r);
+	if (c == 'n')
+		return('\n');
+	else if (c == 't')
+		return ('\t');
+	else if (c == 'b')
+		return ('\b');
+	else if (c == 'f')
+		return ('\f');
+	else if (c == 'r')
+		return ('\r');
+	else
+		return (c);
 }
 
-char			*read_quoted_key(t_reader *r, bool	b)
+char			*read_quoted_key(t_reader *r, bool b)
 {
-	int64_t c;
-	char	*key;
-	size_t	i;
+	int16_t c;
+	t_str	str;
 
-	if (!(key = (char*)malloc(sizeof(char) * 11)))
+	if (!(str = create_str(10)).inner)
 		ft_error("Error malloc");
-	i = 0;
-	reader_next(r);
-	while ((b == true && c != '"') || (b == false && c != '\''))
+	while ((c = reader_peek(r)) != -1 && c != (b ? '"' : '\''))
 	{
-		if ((i % 10) == 0)
-			key = ten_more(key, i);
-		key[i] = c;
+		if (c == '\\' && b)
+			c = read_escape(r);
+		append_char(&str, c);
 		reader_next(r);
-		i++;
 	}
-	key[i] = '\0';
-	return (key);
+	if (c != -1)
+		reader_next(r);
+	append_char(&str, '\0');
+	return (str.inner);
 }
 
 static char		*read_bare_key(t_reader *r)
 {
-	int64_t c;
-	char	*key;
-	size_t	i;
+	int16_t c;
+	t_str	str;
 
-	if (!(key = (char*)malloc(sizeof(char) * 10)))
+	if (!(str = create_str(10)).inner)
 		ft_error("Error malloc");
-	i = 0;
-	reader_next(r);
-	while ((c = reader_peek(r)) && (c <= 'A' && c >= 'Z')
-		&& (c <= 'a' && c >= 'z') && (c <= '0' && c >= '9'))
+	while ((c = reader_peek(r)) != -1 && ((c >= 'A' && c <= 'Z')
+		|| (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')))
 	{
-		if ((i % 10) == 0)
-			key = ten_more(key, i);
-		key[i] = c;
+		append_char(&str, c);
 		reader_next(r);
-		i++;
 	}
-	key[i] = '\0';
-	return (key);
+	append_char(&str, '\0');
+	return (str.inner);
 }
 
 char		*read_key(t_reader *r)
 {
 	if (reader_peek(r) == '"')
+	{
+		reader_next(r);
 		return (read_quoted_key(r, true));
+	}
 	else if (reader_peek(r) == '\'')
+	{
+		reader_next(r);
 		return (read_quoted_key(r, false));
+	}
 	else
 		return (read_bare_key(r));
 }
