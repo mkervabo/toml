@@ -59,7 +59,7 @@ void	append_array(t_toml_array *array, t_toml tom)
 		new_capacity = array->capacity * 2;
 		old = array->inner;
 		array->inner = malloc(new_capacity * sizeof(t_toml));
-		ft_memcpy(array->inner, old, array->capacity);
+		ft_memcpy(array->inner, old, array->capacity * sizeof(t_toml));
 		array->capacity = new_capacity;
 	}
 	array->inner[array->len++] = tom;
@@ -81,14 +81,14 @@ t_toml_table *create_table(size_t capacity)
 void	append_table(t_toml_table *table, char *key, t_toml tom)
 {
 	size_t			new_capacity;
-	t_toml	*old;
+	t_toml_entry	*old;
 	
 	if (table->len == table->capacity)
 	{
 		new_capacity = table->capacity * 2;
 		old = table->inner;
 		table->inner = malloc(new_capacity * sizeof(t_toml_entry));
-		ft_memcpy(table->inner, old, table->capacity);
+		ft_memcpy(table->inner, old, table->capacity * sizeof(t_toml_entry));
 		table->capacity = new_capacity;
 	}
 	table->inner[table->len++] = (t_toml_entry) {

@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 21:39:06 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/08 13:20:58 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/10 16:54:09 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,13 @@ static char *read_multi_string(t_reader *r, bool b)
 		if (c == '\\' && b == true)
 		{
 			reader_next(r);
-			skip_ws(r, true);
+			if (reader_peek(r) == '\n')
+				skip_ws(r, true);
+			else
+			{
+				append_char(&str, read_escape(r));
+				reader_next(r);
+			}
 		}
 		else if ((c == '"' && b == true) || (c == '\'' && b == false))
 			end = multi_string_end(r, &str, b);

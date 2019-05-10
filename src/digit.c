@@ -6,24 +6,23 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 16:16:14 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/08 10:56:26 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/10 15:38:12 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "toml.h"
 
-static int64_t  read_integer(t_reader *r)
+static float  read_integer(t_reader *r, bool *s)
 {
-    int64_t num;
+    float 	num;
     int16_t c;
-    int s;
 
-    s = 1;
+    *s = false;
 	num = 0;
     c = reader_peek(r);
     if (c == '-')
-		s = -1;
+		*s = true;
 	if (c == '-' || c == '+')
         reader_next(r);
     while ((c = reader_peek(r)) != -1 && ((c >= '0' && c <= '9') || c == '_'))
@@ -32,44 +31,48 @@ static int64_t  read_integer(t_reader *r)
 	    	num = num * 10 + (c - 48);
 		reader_next(r);
     }
-    return(num * s);
+    return (num);
 }
 
-static float read_float(t_reader *r)
+static double read_float(t_reader *r)
 {
-    float	num;
+    double	num;
 	size_t	i;
     int16_t c;
 
 	i = 0;
+	num = 0;
     while ((c = reader_peek(r)) != -1 && ((c >= '0' && c <= '9') || c == '_'))
 	{
         if (c >= '0' && c <= '9')
+		{
 	    	num = num * 10 + (c - 48);
+			i++;
+		}
 		reader_next(r);
-		i++;
     }
     while (i-- > 0)
         num *= 0.1;
-    return(num);
+    return (num);
 }
 
 t_toml      read_digit(t_reader *r)
 {
-    t_toml  digit;
-    int     integer;
+    t_toml 		digit;
+    float		integer;
+	bool		sign;
 
-    integer = read_integer(r);
+    integer = read_integer(r, &sign);
     if (reader_peek(r) == '.')
     {
         reader_next(r);
         return ((t_toml) {
             TOML_FLOAT,
-            {.float_v = integer + read_float(r)}
+            {.float_v = (sign ? -1 : 1) * ((double)integer + read_float(r))}
         });
     }
     return ((t_toml) {
             TOML_INTEGER,
-            {.integer_v = integer}
+            {.integer_v = sign ? -integer : integer}
         });
 }

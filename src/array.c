@@ -9,21 +9,19 @@ t_toml		read_array(t_reader *r)
 	tom.type = TOML_ARRAY;
 	array = create_array(10);
 	reader_next(r);
-	skip_ws(r, false);
-	append_array(&array, read_toml_value(r));
-	printf("type: %u\n", array->inner[array->len].type);
-	while ((c = reader_peek(r)) != -1 && c != ']')
+	while (reader_peek(r) != -1)
 	{
-		if (c == ',')
-		{
+		skip_ws(r, true);
+		if (reader_peek(r) == ']')
+			break;
+		append_array(array, read_toml_value(r));
+		if (array->inner[array->len - 1].type != array->inner[0].type)
+			ft_error("Wrong array");
+		skip_ws(r, true);
+		if (reader_peek(r) == ',')
 			reader_next(r);
-			skip_ws(r, false);
-			append_array(array, read_toml_value(r));
-			if (array->inner[array->len - 1].type != array->inner[0].type)
-				ft_error("Wrong array");
-		}
-		else
-			reader_next(r);
+		else if (reader_peek(r) != ']')
+			ft_error("Missing commad or unterminated array");
 	}
 	tom.value.array_v = array;
 	reader_next(r);

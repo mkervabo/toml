@@ -6,17 +6,16 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/08 11:06:23 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/10 16:50:10 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 
-char		read_escape(t_reader *r)
+char			read_escape(t_reader *r)
 {
 	char c;
 
-	reader_next(r);
 	c = reader_peek(r);
 	if (c == 'n')
 		return('\n');
@@ -41,8 +40,13 @@ char			*read_quoted_key(t_reader *r, bool b)
 		ft_error("Error malloc");
 	while ((c = reader_peek(r)) != -1 && c != (b ? '"' : '\''))
 	{
+		if (c == '\n')
+			ft_error("Invalid key");
 		if (c == '\\' && b)
+		{
+			reader_next(r);
 			c = read_escape(r);
+		}
 		append_char(&str, c);
 		reader_next(r);
 	}
@@ -60,7 +64,8 @@ static char		*read_bare_key(t_reader *r)
 	if (!(str = create_str(10)).inner)
 		ft_error("Error malloc");
 	while ((c = reader_peek(r)) != -1 && ((c >= 'A' && c <= 'Z')
-		|| (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')))
+		|| (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
+		|| c == '-' || c == '_'))
 	{
 		append_char(&str, c);
 		reader_next(r);

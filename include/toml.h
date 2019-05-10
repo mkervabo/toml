@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/08 18:16:11 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/10 16:52:00 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct	s_toml
 	t_toml_type	type;
 	union {
 		int64_t				integer_v;
-		float				float_v;
+		double				float_v;
 		char				*string_v;
 		bool				boolean_v;
 		struct s_toml_array	*array_v;
@@ -87,7 +87,6 @@ void			ft_error(char *msg);
 
 void			skip_ws(t_reader *r, bool newline);
 
-char			*ten_more(char *str, size_t len);
 char			read_escape(t_reader *r);
 
 char			*read_key(t_reader *r);
@@ -101,6 +100,8 @@ t_toml_table	*create_table(size_t capacity);
 void			append_table(t_toml_table *table, char *key, t_toml tom);
 
 t_toml_table	*read_toml(t_reader *r, bool read_tables);
+t_toml_table 	*read_dotted_key(t_reader *r, t_toml_table *petit_poisson, char **key);
+void 			read_table(t_reader *r, t_toml_table *gros_poisson);
 t_toml			read_toml_value(t_reader *r);
 t_toml     		read_digit(t_reader *r);
 t_toml        	read_string(t_reader *r);

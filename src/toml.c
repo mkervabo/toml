@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/08 18:22:20 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/10 16:46:38 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,47 +53,40 @@ t_toml			read_toml_value(t_reader *r)
 		tom = read_array(r);
 	else if (c == 't' || c == 'f')
 		tom = read_boolean(r);
+	else
+		ft_error("Invalid toml value");
 	return (tom);
 }
 
 t_toml_table	*read_toml(t_reader *r, bool read_tables)
 {
 	t_toml_table	*gros_poisson;
+	t_toml_table	*petit_poisson;
 	char 			*key;
 	int16_t 		c;
 
 	gros_poisson = create_table(10);
+	skip_ws(r, true);
 	while (reader_peek(r) != -1)
 	{
-		skip_ws(r, true);
 		if (reader_peek(r) == '[')
 		{
 			if (read_tables)
-			{
-				reader_next(r);
-				skip_ws(r, false);
-				key = read_key(r);
-				skip_ws(r, false);
-				if (reader_peek(r) != ']')
-					ft_error("Invalid table header");
-				reader_next(r);
-				append_table(gros_poisson, key, (t_toml) {
-					TOML_TABLE,
-					{ .table_v = read_toml(r, false) }
-				});
-			} else
+				read_table(r, gros_poisson);
+			else
 				break ;
 		}
 		else
 		{
-			key = read_key(r);
-			skip_ws(r, false);
+			petit_poisson = read_dotted_key(r, gros_poisson, &key);
 			c = reader_peek(r);
 			if (c != '=')
 				ft_error("Wrong format");
 			reader_next(r);
 			skip_ws(r, false);
-			append_table(gros_poisson, key, read_toml_value(r));
+			append_table(petit_poisson, key, read_toml_value(r));
 		}
+		skip_ws(r, true);
 	}
+	return (gros_poisson);
 }
