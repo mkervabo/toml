@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/10 16:50:10 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 15:08:26 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,61 +31,67 @@ char			read_escape(t_reader *r)
 		return (c);
 }
 
-char			*read_quoted_key(t_reader *r, bool b)
+t_toml_error	read_quoted_key(t_reader *r, bool b, char **key)
 {
-	int16_t c;
 	t_str	str;
+	int16_t c;
 
 	if (!(str = create_str(10)).inner)
-		ft_error("Error malloc");
+		return (ERROR_MALLOC);
 	while ((c = reader_peek(r)) != -1 && c != (b ? '"' : '\''))
 	{
 		if (c == '\n')
-			ft_error("Invalid key");
+			return (INVALID_KEY);
 		if (c == '\\' && b)
 		{
 			reader_next(r);
 			c = read_escape(r);
 		}
-		append_char(&str, c);
+		if (!append_char(&str, c))
+			return (ERROR_MALLOC);
 		reader_next(r);
 	}
 	if (c != -1)
 		reader_next(r);
-	append_char(&str, '\0');
-	return (str.inner);
+	if (!append_char(&str, '\0'))
+		return (ERROR_MALLOC);
+	*key = str.inner;
+	return (NO_ERROR);
 }
 
-static char		*read_bare_key(t_reader *r)
+static t_toml_error	read_bare_key(t_reader *r, char **key)
 {
-	int16_t c;
 	t_str	str;
+	int16_t c;
 
 	if (!(str = create_str(10)).inner)
-		ft_error("Error malloc");
+		return (ERROR_MALLOC);
 	while ((c = reader_peek(r)) != -1 && ((c >= 'A' && c <= 'Z')
 		|| (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
 		|| c == '-' || c == '_'))
 	{
-		append_char(&str, c);
+		if (!append_char(&str, c))
+			return (ERROR_MALLOC);
 		reader_next(r);
 	}
-	append_char(&str, '\0');
-	return (str.inner);
+	if (!append_char(&str, '\0'))
+		return (ERROR_MALLOC);
+	*key = str.inner;
+	return (NO_ERROR);
 }
 
-char		*read_key(t_reader *r)
+t_toml_error		read_key(t_reader *r, char **str)
 {
 	if (reader_peek(r) == '"')
 	{
 		reader_next(r);
-		return (read_quoted_key(r, true));
+		return (read_quoted_key(r, true, str));
 	}
 	else if (reader_peek(r) == '\'')
 	{
 		reader_next(r);
-		return (read_quoted_key(r, false));
+		return (read_quoted_key(r, false, str));
 	}
 	else
-		return (read_bare_key(r));
+		return (read_bare_key(r, str));
 }

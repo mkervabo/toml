@@ -13,24 +13,23 @@ static bool		reader_expect(t_reader *r, const char *expected)
 	return (true);
 }
 
-t_toml		read_boolean(t_reader *r)
+t_toml_error		read_boolean(t_reader *r, t_toml *tom)
 {
-	t_toml	tom;
 
-	tom.type = TOML_BOOLEAN;
+	tom->type = TOML_BOOLEAN;
 	if (reader_peek(r) == 't')
 	{
 		if (reader_expect(r, "true"))
-			tom.value.boolean_v = true;
+			tom->value.boolean_v = true;
 		else
-			ft_error("Invalid bool");
+			return(INVALID_BOOL);
 	}
 	else
 	{
 		if (reader_expect(r, "false"))
-			tom.value.boolean_v = false;
+			tom->value.boolean_v = false;
 		else
-			ft_error("Invalid bool");
+			return(INVALID_BOOL);
 	}
-	return (tom);
+	return (NO_ERROR);
 }

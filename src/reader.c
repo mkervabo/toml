@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:13:11 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/01 13:25:06 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 15:56:17 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ t_reader	create_reader(int fd, char *buffer, size_t buffer_size)
 		.buffer = buffer,
 		.buffer_size = buffer_size,
 		.len = 0,
-		.i = 0
+		.i = 0,
+		.column = 0,
+		.line = 1
 	});
 }
 
@@ -42,5 +44,12 @@ int16_t		reader_peek(t_reader *self)
 
 void		reader_next(t_reader *self)
 {
+	if (reader_peek(self) == '\n')
+	{
+		self->line++;
+		self->column = 0;
+	}
+	else
+		self->column++;
 	self->i++;
 }

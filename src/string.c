@@ -6,13 +6,13 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 21:39:06 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/10 16:54:09 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 15:41:56 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 
-static bool	multi_string_end(t_reader *r, t_str *str, bool quote)
+static t_toml_error	multi_string_end(t_reader *r, t_str *str, bool quote, bool *end)
 {
 	char q;
 	int16_t c;
@@ -28,25 +28,32 @@ static bool	multi_string_end(t_reader *r, t_str *str, bool quote)
 		reader_next(r);
 		c = reader_peek(r);
 		if ((c == '"' && quote == true) || (c == '\'' && quote == false))
-			return(true);
-		append_char(str, q);
+		{
+			*end = true;
+			return (NO_ERROR);
+		}
+		if (!append_char(str, q))
+			return (ERROR_MALLOC);
 	}
-	append_char(str, q);
-	return(false);
+	if (!append_char(str, q))
+		return (ERROR_MALLOC);
+	*end = false;
+	return (NO_ERROR);
 }
 
-static char *read_multi_string(t_reader *r, bool b)
+static t_toml_error read_multi_string(t_reader *r, bool b, char **s)
 {
-	int64_t	c;
-	bool	end;
-	t_str	str;
+	t_str			str;
+	int64_t			c;
+	t_toml_error	err;
+	bool			end;
 
 	end = false;
 	reader_next(r);
 	if(reader_peek(r) == '\n')
 		reader_next(r);
 	if (!(str = create_str(10)).inner)
-		ft_error("Error malloc");
+		return (ERROR_MALLOC);
 	while ((c = reader_peek(r)) != -1 && end == false)
 	{
 		if (c == '\\' && b == true)
@@ -56,65 +63,74 @@ static char *read_multi_string(t_reader *r, bool b)
 				skip_ws(r, true);
 			else
 			{
-				append_char(&str, read_escape(r));
+				if (!append_char(&str, read_escape(r)))
+					return(ERROR_MALLOC);
 				reader_next(r);
 			}
 		}
 		else if ((c == '"' && b == true) || (c == '\'' && b == false))
-			end = multi_string_end(r, &str, b);
+		{
+			if ((err = multi_string_end(r, &str, b, &end)) != NO_ERROR)
+				return (err);
+		}
 		else
 		{
-			append_char(&str, c);
+			if (!append_char(&str, c))
+				return (ERROR_MALLOC);
 			reader_next(r);
 		}
 	}
-	append_char(&str, '\0');
+		if (!append_char(&str, '\0'))
+			return (ERROR_MALLOC);
 	reader_next(r);
-	return (str.inner);
+	*s = str.inner;
+	return (NO_ERROR);
 }
 
-static char *read_literal_string(t_reader *r)
+static t_toml_error read_literal_string(t_reader *r, char **str)
 { 
     reader_next(r);
     if (reader_peek(r) == '\'')
     {
         reader_next(r);
         if (reader_peek(r) == '\'')
-            return (read_multi_string(r, false));
-        return ("\0");
+            return (read_multi_string(r, false, str));
+		*str = "\0";
+        return (NO_ERROR);
     }
-	return(read_quoted_key(r, false));
+	return (read_quoted_key(r, false, str));
 }
 
-static char *read_basic_string(t_reader *r)
+static t_toml_error read_basic_string(t_reader *r, char **str)
 {
     reader_next(r);
     if (reader_peek(r) == '"')
     {
         reader_next(r);
         if (reader_peek(r) == '"')
-            return (read_multi_string(r, true));
-        return ("\0");
+            return (read_multi_string(r, true, str));
+        *str = "\0";
+        return (NO_ERROR);
     }
-    return(read_quoted_key(r, true));
+    return(read_quoted_key(r, true, str));
 }
 
-t_toml        read_string(t_reader *r)
+t_toml_error	read_string(t_reader *r, t_toml *tom)
 {
-    int c;
-	t_toml tom;
+    int				c;
+	char			*str;
+	t_toml_error	err;
 
     c = reader_peek(r);
     if (c == '"')
-		return(tom = (t_toml) {
-			TOML_STRING,
-			{.string_v = read_basic_string(r)}
-		});
+		err = read_basic_string(r, &str);
     else if (c == '\'')
-		return(tom = (t_toml) {
-			TOML_STRING,
-			{.string_v = read_literal_string(r)}
-		});
+		err = read_literal_string(r, &str);
 	else
-		ft_error("Invalid string");
+		return (INVALID_STRING);
+	*tom = (t_toml) {
+			TOML_STRING,
+			{ .string_v= str }
+	};
+	return (err);
 }

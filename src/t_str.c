@@ -1,4 +1,5 @@
 #include "toml.h"
+#include <stdlib.h>
 
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
@@ -11,7 +12,7 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	return (dst);
 }
 
-t_str create_str(size_t capacity)
+t_str	create_str(size_t capacity)
 {
 	return ((t_str) {
 		.len = 0,
@@ -20,79 +21,94 @@ t_str create_str(size_t capacity)
 	});
 }
 
-void	append_char(t_str *str, char c)
+bool 	append_char(t_str *str, char c)
 {
 	size_t	new_capacity;
-	char	*old;
+	char	*new;
 	
 	if (str->len == str->capacity)
 	{
 		new_capacity = str->capacity * 2;
-		old = str->inner;
-		str->inner = malloc(new_capacity * sizeof(char));
-		ft_memcpy(str->inner, old, str->capacity);
+		if (!(new = malloc(new_capacity * sizeof(char))))
+			return (false);
+		ft_memcpy(new, str->inner, str->capacity);
+		free(str->inner);
+		str->inner = new;
 		str->capacity = new_capacity;
 	}
 	str->inner[str->len++] = c;
+	return (true);
 }
 
 t_toml_array *create_array(size_t capacity)
 {
-	t_toml_array *array;
+	t_toml_array	*array;
+	t_toml			*tom;
 
-	array = malloc(sizeof(t_toml_array));
+	if (!(array = malloc(sizeof(t_toml_array)))
+	|| !(tom = malloc(capacity * sizeof(t_toml))))
+		return (NULL);
 	*array = (t_toml_array) {
 		.len = 0,
 		.capacity = capacity,
-		.inner = malloc(capacity * sizeof(t_toml))
+		.inner = tom
 	};
 	return (array);
 }
 
-void	append_array(t_toml_array *array, t_toml tom)
+bool	append_array(t_toml_array *array, t_toml tom)
 {
 	size_t	new_capacity;
-	t_toml	*old;
+	t_toml	*new;
 	
 	if (array->len == array->capacity)
 	{
 		new_capacity = array->capacity * 2;
-		old = array->inner;
-		array->inner = malloc(new_capacity * sizeof(t_toml));
-		ft_memcpy(array->inner, old, array->capacity * sizeof(t_toml));
+		if (!(new = malloc(new_capacity * sizeof(t_toml))))
+			return (false);
+		ft_memcpy(new, array->inner, array->capacity * sizeof(t_toml));
+		free(array->inner);
+		array->inner = new;
 		array->capacity = new_capacity;
 	}
 	array->inner[array->len++] = tom;
+	return (true);
 }
 
 t_toml_table *create_table(size_t capacity)
 {
-	t_toml_table *table;
+	t_toml_table	*table;
+	t_toml_entry	*tom;
 
-	table = malloc(sizeof(t_toml_table));
+	if (!(table = malloc(sizeof(t_toml_table))) 
+		|| !(tom = malloc(capacity * sizeof(t_toml_entry))))
+		return (NULL);
 	*table = (t_toml_table) {
 		.len = 0,
 		.capacity = capacity,
-		.inner = malloc(capacity * sizeof(t_toml_entry))
+		.inner = tom
 	};
 	return (table);
 }
 
-void	append_table(t_toml_table *table, char *key, t_toml tom)
+bool	append_table(t_toml_table *table, char *key, t_toml tom)
 {
 	size_t			new_capacity;
-	t_toml_entry	*old;
+	t_toml_entry	*new;
 	
 	if (table->len == table->capacity)
 	{
 		new_capacity = table->capacity * 2;
-		old = table->inner;
-		table->inner = malloc(new_capacity * sizeof(t_toml_entry));
-		ft_memcpy(table->inner, old, table->capacity * sizeof(t_toml_entry));
+		if (!(new = malloc(new_capacity * sizeof(t_toml_entry))))
+			return (false);
+		ft_memcpy(new, table->inner, table->capacity * sizeof(t_toml_entry));
+		free(table->inner);
+		table->inner = new;
 		table->capacity = new_capacity;
 	}
 	table->inner[table->len++] = (t_toml_entry) {
 		.key = key,
 		.value = tom
 	};
+	return (true);
 }

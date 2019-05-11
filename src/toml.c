@@ -6,22 +6,11 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/10 16:46:38 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 15:45:23 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
-
-void			ft_error(char *msg)
-{
-	size_t i;
-
-	i = 0;
-	while (msg[i])
-		i++;
-	write(1, msg, i);
-	exit(0);
-}
 
 void			skip_ws(t_reader *r, bool newline)
 {
@@ -39,54 +28,65 @@ void			skip_ws(t_reader *r, bool newline)
 	}
 }
 
-t_toml			read_toml_value(t_reader *r)
+t_toml_error	read_toml_value(t_reader *r, t_toml *tom)
 {
-	int16_t c;
-	t_toml tom;
+	int16_t		c;
+	t_toml_error err;
 
 	c = reader_peek(r);
+	err = NO_ERROR;
 	if ((c >= '0' && c <= '9') || c == '+' || c == '-')
-		tom = read_digit(r);
+		*tom = read_digit(r);
 	else if (c == '\'' || c == '"')
-		tom =  read_string(r);
+		err = read_string(r, tom);
 	else if (c == '[')
-		tom = read_array(r);
+		err = read_array(r, tom);
 	else if (c == 't' || c == 'f')
-		tom = read_boolean(r);
+		err = read_boolean(r, tom);
 	else
-		ft_error("Invalid toml value");
-	return (tom);
+		return (INVALID_TOML_VALUE);
+	return (err);
 }
 
-t_toml_table	*read_toml(t_reader *r, bool read_tables)
+t_toml_error	read_toml(t_reader *r, t_toml_table **gros_poisson, bool read_tables)
 {
-	t_toml_table	*gros_poisson;
 	t_toml_table	*petit_poisson;
 	char 			*key;
 	int16_t 		c;
+	t_toml			value;
+	t_toml_error	err;
 
-	gros_poisson = create_table(10);
+	if (!(*gros_poisson = create_table(10)))
+		return (ERROR_MALLOC);
 	skip_ws(r, true);
 	while (reader_peek(r) != -1)
 	{
 		if (reader_peek(r) == '[')
 		{
 			if (read_tables)
-				read_table(r, gros_poisson);
+			{
+				if ((err = read_table(r, *gros_poisson)) != NO_ERROR)
+					return (err);
+			}
 			else
 				break ;
 		}
 		else
 		{
-			petit_poisson = read_dotted_key(r, gros_poisson, &key);
+			petit_poisson = *gros_poisson;
+			if ((err = read_dotted_key(r, &petit_poisson, &key)) != NO_ERROR)
+				return (err);
 			c = reader_peek(r);
 			if (c != '=')
-				ft_error("Wrong format");
+				return (INVALID_FORMAT_KEY_VALUE);
 			reader_next(r);
 			skip_ws(r, false);
-			append_table(petit_poisson, key, read_toml_value(r));
+			if ((err = read_toml_value(r, &value)) != NO_ERROR)
+				return (err);
+			if (!append_table(petit_poisson, key, value))
+				return (ERROR_MALLOC);
 		}
 		skip_ws(r, true);
 	}
-	return (gros_poisson);
+	return (NO_ERROR);
 }

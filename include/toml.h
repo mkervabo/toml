@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/10 16:52:00 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 15:51:46 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ typedef struct s_reader
 	size_t		buffer_size;
 	size_t		len;
 	size_t		i;
+	size_t		column;
+	size_t		line;
 }				t_reader;
 
 typedef enum	e_toml_type
@@ -35,6 +37,20 @@ typedef enum	e_toml_type
 	TOML_ARRAY,
 	TOML_TABLE
 }				t_toml_type;
+
+typedef enum	e_toml_error
+{
+	NO_ERROR,
+	ERROR_MALLOC,
+	INVALID_ARRAY,
+	INVALID_BOOL,
+	INVALID_KEY,
+	INVALID_STRING,
+	INVALID_TABLE_HEADER,
+	INVALID_TABLE,
+	INVALID_TOML_VALUE,
+	INVALID_FORMAT_KEY_VALUE,
+}				t_toml_error;
 
 typedef struct	s_toml
 {
@@ -83,30 +99,27 @@ t_reader		create_reader(int fd, char *buffer, size_t buffer_size);
 int16_t			reader_peek(t_reader *self);
 void			reader_next(t_reader *self);
 
-void			ft_error(char *msg);
-
 void			skip_ws(t_reader *r, bool newline);
 
 char			read_escape(t_reader *r);
 
-char			*read_key(t_reader *r);
-char			*read_quoted_key(t_reader *r, bool	b);
-
 t_str			create_str(size_t capacity);
-void			append_char(t_str *str, char c);
-t_toml_array	*create_array(size_t capacity);
-void			append_array(t_toml_array *array, t_toml tom);
+bool 			append_char(t_str *str, char c);
+t_toml_array 	*create_array(size_t capacity);
+bool			append_array(t_toml_array *array, t_toml tom);
 t_toml_table	*create_table(size_t capacity);
-void			append_table(t_toml_table *table, char *key, t_toml tom);
+bool			append_table(t_toml_table *table, char *key, t_toml tom);
 
-t_toml_table	*read_toml(t_reader *r, bool read_tables);
-t_toml_table 	*read_dotted_key(t_reader *r, t_toml_table *petit_poisson, char **key);
-void 			read_table(t_reader *r, t_toml_table *gros_poisson);
-t_toml			read_toml_value(t_reader *r);
+t_toml_error	read_toml(t_reader *r, t_toml_table **gros_poisson, bool read_tables);
+t_toml_error 	read_dotted_key(t_reader *r, t_toml_table **petit_poisson, char **key);
+t_toml_error 	read_table(t_reader *r, t_toml_table *gros_poisson);
+t_toml_error	read_key(t_reader *r, char **str);
+t_toml_error	read_quoted_key(t_reader *r, bool b, char **str);
+t_toml_error	read_toml_value(t_reader *r, t_toml *tom);
 t_toml     		read_digit(t_reader *r);
-t_toml        	read_string(t_reader *r);
-t_toml        	read_array(t_reader *r);
-t_toml			read_boolean(t_reader *r);
+t_toml_error	read_string(t_reader *r, t_toml *tom);
+t_toml_error	read_array(t_reader *r, t_toml *tom);
+t_toml_error	read_boolean(t_reader *r, t_toml *tom);
 
 
 #endif
