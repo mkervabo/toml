@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:13:11 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/11 15:56:17 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 17:25:47 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ int16_t		reader_peek(t_reader *self)
 	}
 	return (self->buffer[self->i]);
 }
-
 
 void		reader_next(t_reader *self)
 {

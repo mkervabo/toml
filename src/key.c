@@ -6,19 +6,19 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/11 15:08:26 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 17:25:06 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 
-char			read_escape(t_reader *r)
+char				read_escape(t_reader *r)
 {
 	char c;
 
 	c = reader_peek(r);
 	if (c == 'n')
-		return('\n');
+		return ('\n');
 	else if (c == 't')
 		return ('\t');
 	else if (c == 'b')
@@ -31,7 +31,7 @@ char			read_escape(t_reader *r)
 		return (c);
 }
 
-t_toml_error	read_quoted_key(t_reader *r, bool b, char **key)
+t_toml_error		read_quoted_key(t_reader *r, bool b, char **key)
 {
 	t_str	str;
 	int16_t c;

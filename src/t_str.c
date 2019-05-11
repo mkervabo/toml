@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   t_str.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/11 17:51:56 by mkervabo          #+#    #+#             */
+/*   Updated: 2019/05/11 17:55:40 by mkervabo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "toml.h"
 #include <stdlib.h>
 
-void	*ft_memcpy(void *dst, const void *src, size_t n)
+void			*ft_memcpy(void *dst, const void *src, size_t n)
 {
 	const char	*c_src = src;
 	char		*c_dst;
@@ -12,7 +24,7 @@ void	*ft_memcpy(void *dst, const void *src, size_t n)
 	return (dst);
 }
 
-t_str	create_str(size_t capacity)
+t_str			create_str(size_t capacity)
 {
 	return ((t_str) {
 		.len = 0,
@@ -21,11 +33,11 @@ t_str	create_str(size_t capacity)
 	});
 }
 
-bool 	append_char(t_str *str, char c)
+bool			append_char(t_str *str, char c)
 {
 	size_t	new_capacity;
 	char	*new;
-	
+
 	if (str->len == str->capacity)
 	{
 		new_capacity = str->capacity * 2;
@@ -40,7 +52,7 @@ bool 	append_char(t_str *str, char c)
 	return (true);
 }
 
-t_toml_array *create_array(size_t capacity)
+t_toml_array	*create_array(size_t capacity)
 {
 	t_toml_array	*array;
 	t_toml			*tom;
@@ -56,11 +68,11 @@ t_toml_array *create_array(size_t capacity)
 	return (array);
 }
 
-bool	append_array(t_toml_array *array, t_toml tom)
+bool			append_array(t_toml_array *array, t_toml tom)
 {
 	size_t	new_capacity;
 	t_toml	*new;
-	
+
 	if (array->len == array->capacity)
 	{
 		new_capacity = array->capacity * 2;
@@ -75,12 +87,12 @@ bool	append_array(t_toml_array *array, t_toml tom)
 	return (true);
 }
 
-t_toml_table *create_table(size_t capacity)
+t_toml_table	*create_table(size_t capacity)
 {
 	t_toml_table	*table;
 	t_toml_entry	*tom;
 
-	if (!(table = malloc(sizeof(t_toml_table))) 
+	if (!(table = malloc(sizeof(t_toml_table)))
 		|| !(tom = malloc(capacity * sizeof(t_toml_entry))))
 		return (NULL);
 	*table = (t_toml_table) {
@@ -91,11 +103,11 @@ t_toml_table *create_table(size_t capacity)
 	return (table);
 }
 
-bool	append_table(t_toml_table *table, char *key, t_toml tom)
+bool			append_table(t_toml_table *table, char *key, t_toml tom)
 {
 	size_t			new_capacity;
 	t_toml_entry	*new;
-	
+
 	if (table->len == table->capacity)
 	{
 		new_capacity = table->capacity * 2;

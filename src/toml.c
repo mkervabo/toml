@@ -6,13 +6,13 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/11 15:45:23 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/11 17:08:21 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 
-void			skip_ws(t_reader *r, bool newline)
+void				skip_ws(t_reader *r, bool newline)
 {
 	int16_t	c;
 
@@ -28,10 +28,10 @@ void			skip_ws(t_reader *r, bool newline)
 	}
 }
 
-t_toml_error	read_toml_value(t_reader *r, t_toml *tom)
+t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
 {
-	int16_t		c;
-	t_toml_error err;
+	int16_t			c;
+	t_toml_error	err;
 
 	c = reader_peek(r);
 	err = NO_ERROR;
@@ -48,12 +48,35 @@ t_toml_error	read_toml_value(t_reader *r, t_toml *tom)
 	return (err);
 }
 
-t_toml_error	read_toml(t_reader *r, t_toml_table **gros_poisson, bool read_tables)
+static t_toml_error	read_key_val(t_reader *r, t_toml_table **gros_poisson,
+	char **key)
 {
-	t_toml_table	*petit_poisson;
-	char 			*key;
-	int16_t 		c;
+	int16_t			c;
+	t_toml_error	err;
 	t_toml			value;
+	t_toml_table	*petit_poisson;
+
+	petit_poisson = *gros_poisson;
+	if ((err = read_dotted_key(r, &petit_poisson, key)) != NO_ERROR)
+		return (err);
+	c = reader_peek(r);
+	if (c != '=')
+		return (INVALID_FORMAT_KEY_VALUE);
+	reader_next(r);
+	skip_ws(r, false);
+	if ((err = read_toml_value(r, &value)) != NO_ERROR)
+		return (err);
+	if (!append_table(petit_poisson, *key, value))
+		return (ERROR_MALLOC);
+	skip_ws(r, true);
+	return (NO_ERROR);
+}
+
+t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
+	bool read_tables)
+{
+	char			*key;
+	int16_t			c;
 	t_toml_error	err;
 
 	if (!(*gros_poisson = create_table(10)))
@@ -71,22 +94,8 @@ t_toml_error	read_toml(t_reader *r, t_toml_table **gros_poisson, bool read_table
 			else
 				break ;
 		}
-		else
-		{
-			petit_poisson = *gros_poisson;
-			if ((err = read_dotted_key(r, &petit_poisson, &key)) != NO_ERROR)
-				return (err);
-			c = reader_peek(r);
-			if (c != '=')
-				return (INVALID_FORMAT_KEY_VALUE);
-			reader_next(r);
-			skip_ws(r, false);
-			if ((err = read_toml_value(r, &value)) != NO_ERROR)
-				return (err);
-			if (!append_table(petit_poisson, key, value))
-				return (ERROR_MALLOC);
-		}
-		skip_ws(r, true);
+		else if ((err = read_key_val(r, gros_poisson, &key)) != NO_ERROR)
+			return (err);
 	}
 	return (NO_ERROR);
 }

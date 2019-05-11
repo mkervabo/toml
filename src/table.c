@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   table.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/11 17:56:17 by mkervabo          #+#    #+#             */
+/*   Updated: 2019/05/11 18:04:45 by mkervabo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "toml.h"
 
-static t_toml	create_toml_table(t_toml_table *value) {
+static t_toml	create_toml_table(t_toml_table *value)
+{
 	return ((t_toml) {
 		TOML_TABLE,
 		{
@@ -8,7 +21,6 @@ static t_toml	create_toml_table(t_toml_table *value) {
 		}
 	});
 }
-
 
 static bool		expected_key(const char *inner_key, const char *key)
 {
@@ -30,13 +42,14 @@ static t_toml	*table_get(t_toml_table *table, const char *key)
 	while (i < table->len)
 	{
 		if (expected_key(table->inner[i].key, key))
-			return(&table->inner[i].value);
+			return (&table->inner[i].value);
 		i++;
 	}
 	return (NULL);
 }
 
-static t_toml_error	read_array_table(t_reader *r, t_toml_table	*petit_poisson, char *key)
+static t_toml_error	read_array_table(t_reader *r, t_toml_table *petit_poisson,
+	char *key)
 {
 	t_toml			*value;
 	t_toml_array	*tom_array;
@@ -58,7 +71,9 @@ static t_toml_error	read_array_table(t_reader *r, t_toml_table	*petit_poisson, c
 			return (ERROR_MALLOC);
 		if (!append_table(petit_poisson, key, (t_toml) {
 			TOML_ARRAY,
-			{ .array_v = tom_array }
+			{
+				.array_v = tom_array
+			}
 		}))
 			return (ERROR_MALLOC);
 	}
@@ -69,7 +84,8 @@ static t_toml_error	read_array_table(t_reader *r, t_toml_table	*petit_poisson, c
 	return (NO_ERROR);
 }
 
-t_toml_error read_dotted_key(t_reader *r, t_toml_table **petit_poisson, char **key)
+t_toml_error	read_dotted_key(t_reader *r, t_toml_table **petit_poisson,
+	char **key)
 {
 	t_toml			*value;
 	t_toml_table	*table;
@@ -111,11 +127,11 @@ t_toml_error read_dotted_key(t_reader *r, t_toml_table **petit_poisson, char **k
 	return (NO_ERROR);
 }
 
-t_toml_error 	read_table(t_reader *r, t_toml_table *gros_poisson)
+t_toml_error	read_table(t_reader *r, t_toml_table *gros_poisson)
 {
 	bool			array;
 	t_toml_table	*petit_poisson;
-	char 			*key;
+	char			*key;
 	t_toml_error	err;
 	t_toml_table	*value;
 

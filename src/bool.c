@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bool.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/11 17:22:06 by mkervabo          #+#    #+#             */
+/*   Updated: 2019/05/11 17:22:08 by mkervabo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "toml.h"
 
 static bool		reader_expect(t_reader *r, const char *expected)
@@ -13,23 +25,22 @@ static bool		reader_expect(t_reader *r, const char *expected)
 	return (true);
 }
 
-t_toml_error		read_boolean(t_reader *r, t_toml *tom)
+t_toml_error	read_boolean(t_reader *r, t_toml *tom)
 {
-
 	tom->type = TOML_BOOLEAN;
 	if (reader_peek(r) == 't')
 	{
 		if (reader_expect(r, "true"))
 			tom->value.boolean_v = true;
 		else
-			return(INVALID_BOOL);
+			return (INVALID_BOOL);
 	}
 	else
 	{
 		if (reader_expect(r, "false"))
 			tom->value.boolean_v = false;
 		else
-			return(INVALID_BOOL);
+			return (INVALID_BOOL);
 	}
 	return (NO_ERROR);
 }
