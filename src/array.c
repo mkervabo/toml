@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 17:09:19 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/11 17:20:03 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/12 13:24:29 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 t_toml_error	read_array(t_reader *r, t_toml *tom)
 {
 	t_toml_array	*array;
-	int16_t			c;
 
 	if (!(array = create_array(10)))
 		return (ERROR_MALLOC);

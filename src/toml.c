@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/11 17:08:21 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/12 13:26:04 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
 	bool read_tables)
 {
 	char			*key;
-	int16_t			c;
 	t_toml_error	err;
 
 	if (!(*gros_poisson = create_table(10)))
