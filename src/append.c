@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_str.c                                            :+:      :+:    :+:   */
+/*   append.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/11 17:51:56 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/11 17:55:40 by mkervabo         ###   ########.fr       */
+/*   Created: 2019/05/12 13:02:32 by mkervabo          #+#    #+#             */
+/*   Updated: 2019/05/12 13:05:11 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 #include <stdlib.h>
 
-void			*ft_memcpy(void *dst, const void *src, size_t n)
+static void		*ft_memcpy(void *dst, const void *src, size_t n)
 {
 	const char	*c_src = src;
 	char		*c_dst;
@@ -22,15 +22,6 @@ void			*ft_memcpy(void *dst, const void *src, size_t n)
 	while (n--)
 		*c_dst++ = *c_src++;
 	return (dst);
-}
-
-t_str			create_str(size_t capacity)
-{
-	return ((t_str) {
-		.len = 0,
-		.capacity = capacity,
-		.inner = malloc(capacity * sizeof(char))
-	});
 }
 
 bool			append_char(t_str *str, char c)
@@ -52,22 +43,6 @@ bool			append_char(t_str *str, char c)
 	return (true);
 }
 
-t_toml_array	*create_array(size_t capacity)
-{
-	t_toml_array	*array;
-	t_toml			*tom;
-
-	if (!(array = malloc(sizeof(t_toml_array)))
-	|| !(tom = malloc(capacity * sizeof(t_toml))))
-		return (NULL);
-	*array = (t_toml_array) {
-		.len = 0,
-		.capacity = capacity,
-		.inner = tom
-	};
-	return (array);
-}
-
 bool			append_array(t_toml_array *array, t_toml tom)
 {
 	size_t	new_capacity;
@@ -85,22 +60,6 @@ bool			append_array(t_toml_array *array, t_toml tom)
 	}
 	array->inner[array->len++] = tom;
 	return (true);
-}
-
-t_toml_table	*create_table(size_t capacity)
-{
-	t_toml_table	*table;
-	t_toml_entry	*tom;
-
-	if (!(table = malloc(sizeof(t_toml_table)))
-		|| !(tom = malloc(capacity * sizeof(t_toml_entry))))
-		return (NULL);
-	*table = (t_toml_table) {
-		.len = 0,
-		.capacity = capacity,
-		.inner = tom
-	};
-	return (table);
 }
 
 bool			append_table(t_toml_table *table, char *key, t_toml tom)
