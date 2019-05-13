@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/12 13:26:04 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/13 14:36:26 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
 		err = read_string(r, tom);
 	else if (c == '[')
 		err = read_array(r, tom);
+	else if (c == '{')
+		err = read_inline_table(r, tom);
 	else if (c == 't' || c == 'f')
 		err = read_boolean(r, tom);
 	else
@@ -48,7 +50,7 @@ t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
 	return (err);
 }
 
-static t_toml_error	read_key_val(t_reader *r, t_toml_table **gros_poisson,
+t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson,
 	char **key)
 {
 	int16_t			c;
@@ -56,7 +58,7 @@ static t_toml_error	read_key_val(t_reader *r, t_toml_table **gros_poisson,
 	t_toml			value;
 	t_toml_table	*petit_poisson;
 
-	petit_poisson = *gros_poisson;
+	petit_poisson = gros_poisson;
 	if ((err = read_dotted_key(r, &petit_poisson, key)) != NO_ERROR)
 		return (err);
 	c = reader_peek(r);
@@ -93,7 +95,7 @@ t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
 			else
 				break ;
 		}
-		else if ((err = read_key_val(r, gros_poisson, &key)) != NO_ERROR)
+		else if ((err = read_key_val(r, *gros_poisson, &key)) != NO_ERROR)
 			return (err);
 	}
 	return (NO_ERROR);

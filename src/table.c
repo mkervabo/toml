@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 17:56:17 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/12 12:54:58 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/13 14:40:47 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,32 @@ t_toml_error		read_table(t_reader *r, t_toml_table *gros_poisson)
 				err = ERROR_MALLOC;
 	}
 	return (err);
+}
+
+t_toml_error		read_inline_table(t_reader *r, t_toml *tom)
+{
+	t_toml_table	*gros_poisson;
+	t_toml_error	err;
+	char			*key;
+	int16_t			c;
+
+	if (!(gros_poisson = create_table(10)))
+		return (ERROR_MALLOC);
+	reader_next(r);
+	skip_ws(r, false);
+	while ((c = reader_peek(r)) != -1 && c != '}')
+	{
+		if ((err = read_key_val(r, gros_poisson, &key)) != NO_ERROR)
+			return (err);
+		skip_ws(r, false);
+		if (reader_peek(r) == ',')
+			reader_next(r);
+		else if (reader_peek(r) != '}')
+			return (INVALID_INLINE_TABLE);
+		skip_ws(r, false);
+	}
+	tom->type = TOML_TABLE;
+	tom->value.table_v = gros_poisson;
+	reader_next(r);
+	return (NO_ERROR);
 }
