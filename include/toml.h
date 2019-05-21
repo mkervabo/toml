@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/13 18:43:45 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/19 14:45:47 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ t_toml_error	read_dotted_key(t_reader *r, t_toml_table **petit_poisson,
 					char **key);
 					
 t_toml_error	read_toml_value(t_reader *r, t_toml *tom);
-t_toml			read_digit(t_reader *r);
+t_toml			read_toml_digit(t_reader *r);
 t_toml_error	read_string(t_reader *r, t_toml *tom);
 t_toml_error	read_multi_string(t_reader *r, bool quote, char **s);
 t_toml_error	read_array(t_reader *r, t_toml *tom);

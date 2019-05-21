@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 16:16:14 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/12 13:24:46 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/19 14:45:55 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static double	read_float(t_reader *r)
 	return (num);
 }
 
-t_toml			read_digit(t_reader *r)
+t_toml			read_toml_digit(t_reader *r)
 {
 	float	integer;
 	bool	sign;

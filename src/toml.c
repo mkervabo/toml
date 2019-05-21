@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/13 14:36:26 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/19 14:46:01 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
 	c = reader_peek(r);
 	err = NO_ERROR;
 	if ((c >= '0' && c <= '9') || c == '+' || c == '-')
-		*tom = read_digit(r);
+		*tom = read_toml_digit(r);
 	else if (c == '\'' || c == '"')
 		err = read_string(r, tom);
 	else if (c == '[')

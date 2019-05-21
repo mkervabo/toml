@@ -6,13 +6,13 @@
 #    By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/12 13:29:47 by mkervabo          #+#    #+#              #
-#    Updated: 2019/05/12 13:29:47 by mkervabo         ###   ########.fr        #
+#    Updated: 2019/05/19 15:17:42 by mkervabo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME   = libtoml.a
 CC     = gcc
-CFLAGS = -Wall -Wextra -Werror -Iinclude
+CFLAGS = -Wall -Wextra -Werror -Iinclude -g
 
 include src.mk
 
