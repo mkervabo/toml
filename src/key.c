@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/11 17:25:06 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 13:17:40 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,26 +37,26 @@ t_toml_error		read_quoted_key(t_reader *r, bool b, char **key)
 	int16_t c;
 
 	if (!(str = create_str(10)).inner)
-		return (ERROR_MALLOC);
+		return (error_malloc);
 	while ((c = reader_peek(r)) != -1 && c != (b ? '"' : '\''))
 	{
 		if (c == '\n')
-			return (INVALID_KEY);
+			return (invalid_key);
 		if (c == '\\' && b)
 		{
 			reader_next(r);
 			c = read_escape(r);
 		}
 		if (!append_char(&str, c))
-			return (ERROR_MALLOC);
+			return (error_malloc);
 		reader_next(r);
 	}
 	if (c != -1)
 		reader_next(r);
 	if (!append_char(&str, '\0'))
-		return (ERROR_MALLOC);
+		return (error_malloc);
 	*key = str.inner;
-	return (NO_ERROR);
+	return (no_error);
 }
 
 static t_toml_error	read_bare_key(t_reader *r, char **key)
@@ -65,19 +65,19 @@ static t_toml_error	read_bare_key(t_reader *r, char **key)
 	int16_t c;
 
 	if (!(str = create_str(10)).inner)
-		return (ERROR_MALLOC);
+		return (error_malloc);
 	while ((c = reader_peek(r)) != -1 && ((c >= 'A' && c <= 'Z')
 		|| (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
 		|| c == '-' || c == '_'))
 	{
 		if (!append_char(&str, c))
-			return (ERROR_MALLOC);
+			return (error_malloc);
 		reader_next(r);
 	}
 	if (!append_char(&str, '\0'))
-		return (ERROR_MALLOC);
+		return (error_malloc);
 	*key = str.inner;
-	return (NO_ERROR);
+	return (no_error);
 }
 
 t_toml_error		read_key(t_reader *r, char **str)

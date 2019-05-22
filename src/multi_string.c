@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/12 12:56:25 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/12 12:58:00 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 13:18:54 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,15 @@ static t_toml_error	multi_string_end(t_reader *r, t_str *str, bool quote,
 		if ((c == '"' && quote == true) || (c == '\'' && quote == false))
 		{
 			*end = true;
-			return (NO_ERROR);
+			return (no_error);
 		}
 		if (!append_char(str, q))
-			return (ERROR_MALLOC);
+			return (error_malloc);
 	}
 	if (!append_char(str, q))
-		return (ERROR_MALLOC);
+		return (error_malloc);
 	*end = false;
-	return (NO_ERROR);
+	return (no_error);
 }
 
 static t_toml_error	read_multi_string_char(t_reader *r, t_str *str, bool quote,
@@ -48,7 +48,7 @@ static t_toml_error	read_multi_string_char(t_reader *r, t_str *str, bool quote,
 	int16_t			c;
 	t_toml_error	err;
 
-	err = NO_ERROR;
+	err = no_error;
 	if ((c = reader_peek(r)) == '\\' && quote == true)
 	{
 		reader_next(r);
@@ -57,7 +57,7 @@ static t_toml_error	read_multi_string_char(t_reader *r, t_str *str, bool quote,
 		else
 		{
 			if (!append_char(str, read_escape(r)))
-				return (ERROR_MALLOC);
+				return (error_malloc);
 			reader_next(r);
 		}
 	}
@@ -66,7 +66,7 @@ static t_toml_error	read_multi_string_char(t_reader *r, t_str *str, bool quote,
 	else
 	{
 		if (!append_char(str, c))
-			return (ERROR_MALLOC);
+			return (error_malloc);
 		reader_next(r);
 	}
 	return (err);
@@ -84,13 +84,13 @@ t_toml_error		read_multi_string(t_reader *r, bool quote, char **s)
 	if (reader_peek(r) == '\n')
 		reader_next(r);
 	if (!(str = create_str(10)).inner)
-		return (ERROR_MALLOC);
+		return (error_malloc);
 	while ((c = reader_peek(r)) != -1 && end == false)
-		if ((err = read_multi_string_char(r, &str, quote, &end)) != NO_ERROR)
+		if ((err = read_multi_string_char(r, &str, quote, &end)) != no_error)
 			return (err);
 	if (!append_char(&str, '\0'))
-		return (ERROR_MALLOC);
+		return (error_malloc);
 	reader_next(r);
 	*s = str.inner;
-	return (NO_ERROR);
+	return (no_error);
 }

@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 21:39:06 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/12 13:01:06 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 13:19:25 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static t_toml_error	read_literal_string(t_reader *r, char **str)
 		if (reader_peek(r) == '\'')
 			return (read_multi_string(r, false, str));
 		*str = "\0";
-		return (NO_ERROR);
+		return (no_error);
 	}
 	return (read_quoted_key(r, false, str));
 }
@@ -35,7 +35,7 @@ static t_toml_error	read_basic_string(t_reader *r, char **str)
 		if (reader_peek(r) == '"')
 			return (read_multi_string(r, true, str));
 		*str = "\0";
-		return (NO_ERROR);
+		return (no_error);
 	}
 	return (read_quoted_key(r, true, str));
 }
@@ -52,9 +52,9 @@ t_toml_error		read_string(t_reader *r, t_toml *tom)
 	else if (c == '\'')
 		err = read_literal_string(r, &str);
 	else
-		return (INVALID_STRING);
+		return (invalid_string);
 	*tom = (t_toml) {
-			TOML_STRING,
+			TOML_string,
 			{
 				.string_v = str
 			}

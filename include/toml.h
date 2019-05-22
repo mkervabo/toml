@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/19 14:45:47 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 13:12:38 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,27 +30,27 @@ typedef struct	s_reader
 
 typedef enum	e_toml_type
 {
-	TOML_INTEGER,
-	TOML_FLOAT,
-	TOML_STRING,
-	TOML_BOOLEAN,
-	TOML_ARRAY,
-	TOML_TABLE
+	TOML_integer,
+	TOML_float,
+	TOML_string,
+	TOML_boolean,
+	TOML_array,
+	TOML_table
 }				t_toml_type;
 
 typedef enum	e_toml_error
 {
-	NO_ERROR,
-	ERROR_MALLOC,
-	INVALID_ARRAY,
-	INVALID_BOOL,
-	INVALID_KEY,
-	INVALID_STRING,
-	INVALID_TABLE_HEADER,
-	INVALID_TABLE,
-	INVALID_INLINE_TABLE,
-	INVALID_TOML_VALUE,
-	INVALID_FORMAT_KEY_VALUE,
+	no_error,
+	error_malloc,
+	invalid_array,
+	invalid_bool,
+	invalid_key,
+	invalid_string,
+	invalid_table_header,
+	invalid_table,
+	invalid_inline_table,
+	invalid_toml_value,
+	invalid_format_key_value,
 }				t_toml_error;
 
 typedef union	u_toml_value

@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 16:16:14 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/19 14:45:55 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 13:25:11 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,14 @@ t_toml			read_toml_digit(t_reader *r)
 	{
 		reader_next(r);
 		return ((t_toml) {
-			TOML_FLOAT,
+			TOML_float,
 			{
 				.float_v = (sign ? -1 : 1) * ((double)integer + read_float(r))
 			}
 		});
 	}
 	return ((t_toml) {
-		TOML_INTEGER,
+		TOML_integer,
 		{
 			.integer_v = sign ? -integer : integer
 		}
