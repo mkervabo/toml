@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/12 12:42:35 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/22 13:16:39 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 13:47:47 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,25 +46,25 @@ static t_toml_error	read_dotted_key_char(t_toml_table **petit_poisson,
 
 	if ((elem = table_get(*petit_poisson, *key)))
 	{
-		if (elem->type == TOML_array)
+		if (elem->type == TOML_Array)
 		{
 			if (elem->value.array_v->len == 0)
-				return (invalid_table);
+				return (Invalid_Table);
 			elem = &elem->value.array_v->inner[elem->value.array_v->len - 1];
 		}
-		if (elem->type != TOML_table)
-			return (invalid_table);
+		if (elem->type != TOML_Table)
+			return (Invalid_Table);
 		*petit_poisson = elem->value.table_v;
 	}
 	else
 	{
 		if (!(table = create_table(10)))
-			return (error_malloc);
+			return (Error_Malloc);
 		if (!append_table(*petit_poisson, *key, create_toml_table(table)))
-			return (error_malloc);
+			return (Error_Malloc);
 		*petit_poisson = table;
 	}
-	return (no_error);
+	return (No_Error);
 }
 
 t_toml_error		read_dotted_key(t_reader *r, t_toml_table **petit_poisson,
@@ -73,18 +73,18 @@ t_toml_error		read_dotted_key(t_reader *r, t_toml_table **petit_poisson,
 	t_toml_error	err;
 
 	skip_ws(r, false);
-	if ((err = read_key(r, key)) != no_error)
+	if ((err = read_key(r, key)) != No_Error)
 		return (err);
 	skip_ws(r, false);
 	while (reader_peek(r) == '.')
 	{
 		reader_next(r);
 		skip_ws(r, false);
-		if ((err = read_dotted_key_char(petit_poisson, key)) != no_error)
+		if ((err = read_dotted_key_char(petit_poisson, key)) != No_Error)
 			return (err);
-		if ((err = read_key(r, key)) != no_error)
+		if ((err = read_key(r, key)) != No_Error)
 			return (err);
 		skip_ws(r, false);
 	}
-	return (no_error);
+	return (No_Error);
 }

@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/22 13:22:54 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 13:56:05 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
 	t_toml_error	err;
 
 	c = reader_peek(r);
-	err = no_error;
+	err = No_Error;
 	if ((c >= '0' && c <= '9') || c == '+' || c == '-')
 		*tom = read_toml_digit(r);
 	else if (c == '\'' || c == '"')
@@ -46,7 +46,7 @@ t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
 	else if (c == 't' || c == 'f')
 		err = read_boolean(r, tom);
 	else
-		return (invalid_toml_value);
+		return (Invalid_Toml_Value);
 	return (err);
 }
 
@@ -59,19 +59,19 @@ t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson,
 	t_toml_table	*petit_poisson;
 
 	petit_poisson = gros_poisson;
-	if ((err = read_dotted_key(r, &petit_poisson, key)) != no_error)
+	if ((err = read_dotted_key(r, &petit_poisson, key)) != No_Error)
 		return (err);
 	c = reader_peek(r);
 	if (c != '=')
-		return (invalid_format_key_value);
+		return (Invalid_Format_Key_Value);
 	reader_next(r);
 	skip_ws(r, false);
-	if ((err = read_toml_value(r, &value)) != no_error)
+	if ((err = read_toml_value(r, &value)) != No_Error)
 		return (err);
 	if (!append_table(petit_poisson, *key, value))
-		return (error_malloc);
+		return (Error_Malloc);
 	skip_ws(r, true);
-	return (no_error);
+	return (No_Error);
 }
 
 t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
@@ -81,7 +81,7 @@ t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
 	t_toml_error	err;
 
 	if (!(*gros_poisson = create_table(10)))
-		return (error_malloc);
+		return (Error_Malloc);
 	skip_ws(r, true);
 	while (reader_peek(r) != -1)
 	{
@@ -89,14 +89,14 @@ t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
 		{
 			if (read_tables)
 			{
-				if ((err = read_table(r, *gros_poisson)) != no_error)
+				if ((err = read_table(r, *gros_poisson)) != No_Error)
 					return (err);
 			}
 			else
 				break ;
 		}
-		else if ((err = read_key_val(r, *gros_poisson, &key)) != no_error)
+		else if ((err = read_key_val(r, *gros_poisson, &key)) != No_Error)
 			return (err);
 	}
-	return (no_error);
+	return (No_Error);
 }
