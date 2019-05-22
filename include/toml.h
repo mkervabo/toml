@@ -118,8 +118,7 @@ t_toml_error	read_table(t_reader *r, t_toml_table *gros_poisson);
 t_toml_error	read_inline_table(t_reader *r, t_toml *tom);
 
 t_toml_error	read_key(t_reader *r, char **str);
-t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson,
-				char **key);
+t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson);
 t_toml_error	read_quoted_key(t_reader *r, bool b, char **str);
 t_toml_error	read_dotted_key(t_reader *r, t_toml_table **petit_poisson,
 					char **key);
@@ -133,5 +132,9 @@ t_toml_error	read_boolean(t_reader *r, t_toml *tom);
 
 t_toml			*table_get(t_toml_table *table, const char *key);
 t_toml			create_toml_table(t_toml_table *value);
+
+void			free_toml_array(t_toml_array *array);
+void			free_toml_table(t_toml_table *table);
+void			free_toml(t_toml *tom);
 
 #endif

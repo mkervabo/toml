@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "toml.h"
+#include <stdlib.h>
 
 t_toml				create_toml_table(t_toml_table *value)
 {
@@ -32,6 +33,7 @@ static t_toml_error	which_array_table(t_toml_table *petit_poisson,
 		if (value->type != TOML_Array)
 			return (Invalid_Array);
 		*tom_array = value->value.array_v;
+		free(key);
 	}
 	else
 	{
@@ -100,7 +102,6 @@ t_toml_error		read_inline_table(t_reader *r, t_toml *tom)
 {
 	t_toml_table	*gros_poisson;
 	t_toml_error	err;
-	char			*key;
 	int16_t			c;
 
 	if (!(gros_poisson = create_table(10)))
@@ -109,7 +110,7 @@ t_toml_error		read_inline_table(t_reader *r, t_toml *tom)
 	skip_ws(r, false);
 	while ((c = reader_peek(r)) != -1 && c != '}')
 	{
-		if ((err = read_key_val(r, gros_poisson, &key)) != No_Error)
+		if ((err = read_key_val(r, gros_poisson)) != No_Error)
 			return (err);
 		skip_ws(r, false);
 		if (reader_peek(r) == ',')

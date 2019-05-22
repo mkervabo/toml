@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "toml.h"
+#include <stdlib.h>
 
 static bool			expected_key(const char *inner_key, const char *key)
 {
@@ -39,12 +40,12 @@ t_toml				*table_get(t_toml_table *table, const char *key)
 }
 
 static t_toml_error	read_dotted_key_char(t_toml_table **petit_poisson,
-	char **key)
+	char *key)
 {
 	t_toml			*elem;
 	t_toml_table	*table;
 
-	if ((elem = table_get(*petit_poisson, *key)))
+	if ((elem = table_get(*petit_poisson, key)))
 	{
 		if (elem->type == TOML_Array)
 		{
@@ -55,12 +56,13 @@ static t_toml_error	read_dotted_key_char(t_toml_table **petit_poisson,
 		if (elem->type != TOML_Table)
 			return (Invalid_Table);
 		*petit_poisson = elem->value.table_v;
+		free(key);
 	}
 	else
 	{
 		if (!(table = create_table(10)))
 			return (Error_Malloc);
-		if (!append_table(*petit_poisson, *key, create_toml_table(table)))
+		if (!append_table(*petit_poisson, key, create_toml_table(table)))
 			return (Error_Malloc);
 		*petit_poisson = table;
 	}
@@ -80,7 +82,7 @@ t_toml_error		read_dotted_key(t_reader *r, t_toml_table **petit_poisson,
 	{
 		reader_next(r);
 		skip_ws(r, false);
-		if ((err = read_dotted_key_char(petit_poisson, key)) != No_Error)
+		if ((err = read_dotted_key_char(petit_poisson, *key)) != No_Error)
 			return (err);
 		if ((err = read_key(r, key)) != No_Error)
 			return (err);
