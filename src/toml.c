@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "toml.h"
+#include <stdlib.h>
 
 void				skip_ws(t_reader *r, bool newline)
 {
@@ -50,16 +51,16 @@ t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
 	return (err);
 }
 
-t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson,
-	char **key)
+t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson)
 {
 	int16_t			c;
 	t_toml_error	err;
 	t_toml			value;
 	t_toml_table	*petit_poisson;
+	char			*key;
 
 	petit_poisson = gros_poisson;
-	if ((err = read_dotted_key(r, &petit_poisson, key)) != No_Error)
+	if ((err = read_dotted_key(r, &petit_poisson, &key)) != No_Error)
 		return (err);
 	c = reader_peek(r);
 	if (c != '=')
@@ -68,7 +69,7 @@ t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson,
 	skip_ws(r, false);
 	if ((err = read_toml_value(r, &value)) != No_Error)
 		return (err);
-	if (!append_table(petit_poisson, *key, value))
+	if (!append_table(petit_poisson, key, value))
 		return (Error_Malloc);
 	skip_ws(r, true);
 	return (No_Error);
@@ -77,7 +78,6 @@ t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson,
 t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
 	bool read_tables)
 {
-	char			*key;
 	t_toml_error	err;
 
 	if (!(*gros_poisson = create_table(10)))
@@ -95,7 +95,7 @@ t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
 			else
 				break ;
 		}
-		else if ((err = read_key_val(r, *gros_poisson, &key)) != No_Error)
+		else if ((err = read_key_val(r, *gros_poisson)) != No_Error)
 			return (err);
 	}
 	return (No_Error);
