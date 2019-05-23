@@ -10,3 +10,4 @@ SRCS += src/reader.c
 SRCS += src/string.c
 SRCS += src/table.c
 SRCS += src/toml.c
+SRCS += src/error.c

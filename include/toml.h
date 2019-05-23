@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:02:26 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/22 13:44:16 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/22 16:13:39 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,5 +133,6 @@ t_toml_error	read_boolean(t_reader *r, t_toml *tom);
 
 t_toml			*table_get(t_toml_table *table, const char *key);
 t_toml			create_toml_table(t_toml_table *value);
+char			*toml_error_msg(t_toml_error err);
 
 #endif
