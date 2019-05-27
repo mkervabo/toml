@@ -134,8 +134,9 @@ t_toml			*table_get(t_toml_table *table, const char *key);
 t_toml			create_toml_table(t_toml_table *value);
 char			*toml_error_msg(t_toml_error err);
 
-void			free_toml_array(t_toml_array *array);
-void			free_toml_table(t_toml_table *table);
+int				free_toml_array(t_toml_array *array);
+int				free_toml_table(t_toml_table *table);
+int				free_toml_string(char *str);
 void			free_toml(t_toml *tom);
 
 #endif

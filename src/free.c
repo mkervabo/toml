@@ -1,7 +1,7 @@
 #include "toml.h"
 #include <stdlib.h>
 
-void	free_toml_table(t_toml_table *table)
+int	free_toml_table(t_toml_table *table)
 {
 	size_t	i;
 
@@ -14,9 +14,10 @@ void	free_toml_table(t_toml_table *table)
 	}
 	free(table->inner);
 	free(table);
+	return (0);
 }
 
-void	free_toml_array(t_toml_array *array)
+int	free_toml_array(t_toml_array *array)
 {
 	size_t	i;
 
@@ -28,6 +29,13 @@ void	free_toml_array(t_toml_array *array)
 	}
 	free(array->inner);
 	free(array);
+	return (0);
+}
+
+int	free_toml_string(char *str)
+{
+	free(str);
+	return (0);
 }
 
 void	free_toml(t_toml *tom)
@@ -37,5 +45,5 @@ void	free_toml(t_toml *tom)
 	if (tom->type == TOML_Array)
 		free_toml_array(tom->value.array_v);
 	if (tom->type == TOML_String)
-		free(tom->value.string_v);
+		free_toml_string(tom->value.string_v);
 }

@@ -63,7 +63,7 @@ static t_toml_error	read_dotted_key_char(t_toml_table **petit_poisson,
 		if (!(table = create_table(10)))
 			return (Error_Malloc);
 		if (!append_table(*petit_poisson, key, create_toml_table(table)))
-			return (Error_Malloc);
+			return (free_toml_table(table) + Error_Malloc);
 		*petit_poisson = table;
 	}
 	return (No_Error);
@@ -83,7 +83,7 @@ t_toml_error		read_dotted_key(t_reader *r, t_toml_table **petit_poisson,
 		reader_next(r);
 		skip_ws(r, false);
 		if ((err = read_dotted_key_char(petit_poisson, *key)) != No_Error)
-			return (err);
+			return (free_toml_string(*key) + err);
 		if ((err = read_key(r, key)) != No_Error)
 			return (err);
 		skip_ws(r, false);

@@ -41,20 +41,20 @@ t_toml_error		read_quoted_key(t_reader *r, bool b, char **key)
 	while ((c = reader_peek(r)) != -1 && c != (b ? '"' : '\''))
 	{
 		if (c == '\n')
-			return (Invalid_Key);
+			return (free_toml_string(str.inner) + Invalid_Key);
 		if (c == '\\' && b)
 		{
 			reader_next(r);
 			c = read_escape(r);
 		}
 		if (!append_char(&str, c))
-			return (Error_Malloc);
+			return (free_toml_string(str.inner) + Error_Malloc);
 		reader_next(r);
 	}
 	if (c != -1)
 		reader_next(r);
 	if (!append_char(&str, '\0'))
-		return (Error_Malloc);
+		return (free_toml_string(str.inner) + Error_Malloc);
 	*key = str.inner;
 	return (No_Error);
 }
@@ -71,11 +71,11 @@ static t_toml_error	read_bare_key(t_reader *r, char **key)
 		|| c == '-' || c == '_'))
 	{
 		if (!append_char(&str, c))
-			return (Error_Malloc);
+			return (free_toml_string(str.inner) + Error_Malloc);
 		reader_next(r);
 	}
 	if (!append_char(&str, '\0'))
-		return (Error_Malloc);
+		return (free_toml_string(str.inner) + Error_Malloc);
 	*key = str.inner;
 	return (No_Error);
 }

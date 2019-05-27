@@ -45,7 +45,7 @@ static t_toml_error	which_array_table(t_toml_table *petit_poisson,
 				.array_v = *tom_array
 			}
 		}))
-			return (Error_Malloc);
+			return (free_toml_array(*tom_array) + Error_Malloc);
 	}
 	return (No_Error);
 }
@@ -111,12 +111,12 @@ t_toml_error		read_inline_table(t_reader *r, t_toml *tom)
 	while ((c = reader_peek(r)) != -1 && c != '}')
 	{
 		if ((err = read_key_val(r, gros_poisson)) != No_Error)
-			return (err);
+			return (free_toml_table(gros_poisson) + err);
 		skip_ws(r, false);
 		if (reader_peek(r) == ',')
 			reader_next(r);
 		else if (reader_peek(r) != '}')
-			return (Invalid_Inline_Table);
+			return (free_toml_table(gros_poisson) + Invalid_Inline_Table);
 		skip_ws(r, false);
 	}
 	tom->type = TOML_Table;

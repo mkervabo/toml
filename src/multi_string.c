@@ -34,10 +34,10 @@ static t_toml_error	multi_string_end(t_reader *r, t_str *str, bool quote,
 			return (No_Error);
 		}
 		if (!append_char(str, q))
-			return (Error_Malloc);
+			return (free_toml_string(str->inner) + Error_Malloc);
 	}
 	if (!append_char(str, q))
-		return (Error_Malloc);
+		return (free_toml_string(str->inner) + Error_Malloc);
 	*end = false;
 	return (No_Error);
 }
@@ -57,7 +57,7 @@ static t_toml_error	read_multi_string_char(t_reader *r, t_str *str, bool quote,
 		else
 		{
 			if (!append_char(str, read_escape(r)))
-				return (Error_Malloc);
+				return (free_toml_string(str->inner) + Error_Malloc);
 			reader_next(r);
 		}
 	}
@@ -66,7 +66,7 @@ static t_toml_error	read_multi_string_char(t_reader *r, t_str *str, bool quote,
 	else
 	{
 		if (!append_char(str, c))
-			return (Error_Malloc);
+			return (free_toml_string(str->inner) + Error_Malloc);
 		reader_next(r);
 	}
 	return (err);
@@ -89,7 +89,7 @@ t_toml_error		read_multi_string(t_reader *r, bool quote, char **s)
 		if ((err = read_multi_string_char(r, &str, quote, &end)) != No_Error)
 			return (err);
 	if (!append_char(&str, '\0'))
-		return (Error_Malloc);
+		return (free_toml_string(str.inner) + Error_Malloc);
 	reader_next(r);
 	*s = str.inner;
 	return (No_Error);

@@ -15,6 +15,7 @@
 t_toml_error	read_array(t_reader *r, t_toml *tom)
 {
 	t_toml_array	*array;
+	t_toml_error	err;
 
 	if (!(array = create_array(10)))
 		return (Error_Malloc);
@@ -22,16 +23,17 @@ t_toml_error	read_array(t_reader *r, t_toml *tom)
 	skip_ws(r, true);
 	while (reader_peek(r) != -1 && reader_peek(r) != ']')
 	{
-		read_toml_value(r, tom);
+		if ((err = read_toml_value(r, tom)) != No_Error)
+			return (free_toml_array(array) + err);
 		if (!append_array(array, *tom))
-			return (Error_Malloc);
+			return (free_toml_array(array) + Error_Malloc);
 		if (array->inner[array->len - 1].type != array->inner[0].type)
-			return (Invalid_Array);
+			return (free_toml_array(array) + Invalid_Array);
 		skip_ws(r, true);
 		if (reader_peek(r) == ',')
 			reader_next(r);
 		else if (reader_peek(r) != ']')
-			return (Invalid_Array);
+			return (free_toml_array(array) + Invalid_Array);
 		skip_ws(r, true);
 	}
 	tom->type = TOML_Array;
