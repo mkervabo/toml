@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 17:09:19 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/28 11:12:30 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/28 11:18:33 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ t_toml_error		read_array(t_reader *r, t_toml *tom)
 	skip_ws(r, true);
 	while (reader_peek(r) != -1 && reader_peek(r) != ']')
 	{
-		if (!(err = read_array_box(r, tom, &array)) != No_Error)
+		if ((err = read_array_box(r, tom, array)) != No_Error)
 			return (free_toml_array(array) + err);
 	}
 	tom->type = TOML_Array;
