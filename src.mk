@@ -11,3 +11,4 @@ SRCS += src/string.c
 SRCS += src/table.c
 SRCS += src/toml.c
 SRCS += src/free.c
+SRCS += src/error.c

@@ -6,14 +6,14 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/22 13:56:05 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/28 11:13:32 by mkervabo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "toml.h"
 #include <stdlib.h>
 
-void				skip_ws(t_reader *r, bool newline)
+void			skip_ws(t_reader *r, bool newline)
 {
 	int16_t	c;
 
@@ -29,7 +29,7 @@ void				skip_ws(t_reader *r, bool newline)
 	}
 }
 
-t_toml_error		read_toml_value(t_reader *r, t_toml *tom)
+t_toml_error	read_toml_value(t_reader *r, t_toml *tom)
 {
 	int16_t			c;
 	t_toml_error	err;
@@ -75,7 +75,7 @@ t_toml_error	read_key_val(t_reader *r, t_toml_table *gros_poisson)
 	return (No_Error);
 }
 
-t_toml_error		read_toml(t_reader *r, t_toml_table **gros_poisson,
+t_toml_error	read_toml(t_reader *r, t_toml_table **gros_poisson,
 	bool read_tables)
 {
 	t_toml_error	err;

@@ -1,7 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/05/28 10:43:21 by mkervabo          #+#    #+#             */
+/*   Updated: 2019/05/28 11:12:52 by mkervabo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "toml.h"
 #include <stdlib.h>
 
-int	free_toml_table(t_toml_table *table)
+int		free_toml_table(t_toml_table *table)
 {
 	size_t	i;
 
@@ -17,7 +29,7 @@ int	free_toml_table(t_toml_table *table)
 	return (0);
 }
 
-int	free_toml_array(t_toml_array *array)
+int		free_toml_array(t_toml_array *array)
 {
 	size_t	i;
 
@@ -32,7 +44,7 @@ int	free_toml_array(t_toml_array *array)
 	return (0);
 }
 
-int	free_toml_string(char *str)
+int		free_toml_string(char *str)
 {
 	free(str);
 	return (0);
