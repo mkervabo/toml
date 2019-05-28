@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 14:16:32 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/22 13:48:37 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/28 14:35:33 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ static t_toml_error	read_bare_key(t_reader *r, char **key)
 	if (!(str = create_str(10)).inner)
 		return (Error_Malloc);
 	while ((c = reader_peek(r)) != -1 && ((c >= 'A' && c <= 'Z')
-		|| (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
-		|| c == '-' || c == '_'))
+				|| (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
+				|| c == '-' || c == '_'))
 	{
 		if (!append_char(&str, c))
 			return (free_toml_string(str.inner) + Error_Malloc);

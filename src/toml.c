@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/01 13:33:40 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/28 11:13:32 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/28 14:37:14 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void			skip_ws(t_reader *r, bool newline)
 	int16_t	c;
 
 	while ((c = reader_peek(r)) != -1 && (c == ' ' || c == '\t' || c == '#'
-		|| (newline && c == '\n')))
+				|| (newline && c == '\n')))
 	{
 		if (c == '#')
 		{

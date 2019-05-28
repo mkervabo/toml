@@ -6,7 +6,7 @@
 /*   By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/11 17:56:17 by mkervabo          #+#    #+#             */
-/*   Updated: 2019/05/22 13:55:00 by mkervabo         ###   ########.fr       */
+/*   Updated: 2019/05/28 14:36:49 by dde-jesu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ static t_toml_error	which_array_table(t_toml_table *petit_poisson,
 		if (!(*tom_array = create_array(10)))
 			return (Error_Malloc);
 		if (!append_table(petit_poisson, key, (t_toml) {
-			TOML_Array,
-			{
-				.array_v = *tom_array
-			}
-		}))
+					TOML_Array,
+					{
+						.array_v = *tom_array
+					}
+				}))
 			return (free_toml_array(*tom_array) + Error_Malloc);
 	}
 	return (No_Error);
