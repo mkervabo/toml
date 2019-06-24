@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "toml.h"
+#include <stdlib.h>
 
 static t_toml_error	read_literal_string(t_reader *r, char **str)
 {
@@ -20,7 +21,13 @@ static t_toml_error	read_literal_string(t_reader *r, char **str)
 		reader_next(r);
 		if (reader_peek(r) == '\'')
 			return (read_multi_string(r, false, str));
-		*str = "\0";
+		if ((*str = malloc(1)))
+		{
+			**str = '\0';
+			return (No_Error);
+		}
+		else
+			return (Error_Malloc);
 		return (No_Error);
 	}
 	return (read_quoted_key(r, false, str));
@@ -34,15 +41,20 @@ static t_toml_error	read_basic_string(t_reader *r, char **str)
 		reader_next(r);
 		if (reader_peek(r) == '"')
 			return (read_multi_string(r, true, str));
-		*str = "\0";
-		return (No_Error);
+		if ((*str = malloc(1)))
+		{
+			**str = '\0';
+			return (No_Error);
+		}
+		else
+			return (Error_Malloc);
 	}
 	return (read_quoted_key(r, true, str));
 }
 
 t_toml_error		read_string(t_reader *r, t_toml *tom)
 {
-	int				c;
+	int16_t			c;
 	char			*str;
 	t_toml_error	err;
 
