@@ -1,2 +1,3 @@
-/build
 libtoml.a
+*.d
+*.o

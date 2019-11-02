@@ -6,33 +6,36 @@
 #    By: mkervabo <mkervabo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/12 13:29:47 by mkervabo          #+#    #+#              #
-#    Updated: 2019/05/19 15:17:42 by mkervabo         ###   ########.fr        #
+#    Updated: 2019/11/02 16:37:40 by dde-jesu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME   = libtoml.a
-CC     = gcc
-CFLAGS = -Wall -Wextra -Werror -Iinclude -g
+.SECONDARY:
 
-include src.mk
+libtoml.rootdir := $(dir $(lastword $(MAKEFILE_LIST)))
 
-OBJS=$(patsubst src/%.c,build/%.o,$(SRCS))
+libtoml.objects := append.o array.o bool.o create.o digit.o dotted_key.o key.o \
+		multi_string.o reader.o string.o table.o toml.o free.o error.o
+libtoml.objects := $(addprefix $(libtoml.rootdir)src/, $(libtoml.objects))
 
-all: $(NAME)
+$(libtoml.objects): CC       = gcc
+$(libtoml.objects): CFLAGS   ?= -Wall -Wextra -Werror
+$(libtoml.objects): CPPFLAGS += -MMD -MP -I$(libtoml.rootdir)include
 
-build/%.o: src/%.c include/toml.h Makefile
-	@mkdir -p build
-	$(CC) $(CFLAGS) -c $< -o $@
+.PHONY: all
+all: libtoml.a
 
-$(NAME): $(OBJS)
-	ar rcs $(NAME) $(OBJS)
+libtoml.a: libtoml.a($(libtoml.objects))
 
-clean:
-	rm -rf build
+.PHONY: clean
+clean::
+	$(RM) $(libtoml.objects:.o=.{o,d,gcno,gcna})
 
-fclean: clean
-	rm -f $(NAME)
+.PHONY: fclean
+fclean:: clean
+	$(RM) libtoml.a
 
-re:	fclean all
+.PHNOY: re
+re: fclean all
 
-.PHONY:	all	clean fclean re
+-include $(wildcard $(libtoml.rootdir)src/*.d)
